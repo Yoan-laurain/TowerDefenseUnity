@@ -1,70 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class Ennemy : MonoBehaviour
 {
+    [HideInInspector]
     public float speed = 10f;
 
-    private Transform target;
-    private int waypointIndex = 0;
-    public int health = 100;
+
+    public float Initialspeed = 10f;
+    public float starthealth = 100f;
+    private float currentHealth;
     public int rewardKill = 50;
+
     public GameObject dieEffect;
+    public Image healthBar;
 
     void Start()
     {
-        target = WayPoints.points[0];
+        speed = Initialspeed;
+        currentHealth = starthealth;
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(float amount)
     {
-        health -= amount;
+        //Soustraction des pv
+        currentHealth -= amount;
 
-        if(health <= 0)
+        //Modification de la barre de pv
+        healthBar.fillAmount = currentHealth / starthealth;
+
+        //Check si il est mort
+        if(currentHealth <= 0)
         {
             Die();
         }
     }
-
     private void Die()
     {
+        //Ajout de l'argent pour le joueur
         PlayerStat.money += rewardKill;
+        
+        //Effet de mort
         GameObject death = Instantiate(dieEffect, transform.position, Quaternion.identity);
         Destroy(death, 1f);
-        Destroy(gameObject);
-    }
 
-    private void Update()
-    {
-        Vector3 dir = target.position - transform.position;
-        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
-
-        if (Vector3.Distance(transform.position, target.position) <= 0.3f)
-        {
-            GetNextWaypoint();
-        }
-    }
-
-    private void GetNextWaypoint()
-    {
-        if (waypointIndex >= WayPoints.points.Length - 1)
-        {
-            EndPath();
-            return;
-        }
-        waypointIndex++;
-        target = WayPoints.points[waypointIndex];
-    }
-
-    private void EndPath()
-    {
         //Destruction de l'ennemi
         Destroy(gameObject);
+    }
 
-        // On enlève une vie
-        PlayerStat.lives--;
+    public void Slow(float amount)
+    {
+        speed = Initialspeed * (1f - amount);
     }
 
 }

@@ -4,26 +4,39 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
-
+    [Header("General")]
     public Transform target;
     public float range = 15f;
-    public string ennemyTag = "Ennemy";
-    public Transform partToRotate;
-    private float turnSpeed = 5f;
-    public float fireRate = 1f;
-    private float fireCountDown = 0f;
-    public GameObject bulletPrefab;
-    public Transform firePoint;
+    private Ennemy targetEnnemy;
+
+    [Header("Laser")]
     public bool useLaser;
     public LineRenderer lineRenderer;
     public ParticleSystem impactEffect;
     public Light impactLight;
+    public int damageOverTime = 30;
+    public float slowAmount = 0.5f;
+
+    [Header("Bullet")]
+    public float fireRate = 1f;
+    private float fireCountDown = 0f;
+    public GameObject bulletPrefab;
+
+
+    public string ennemyTag = "Ennemy";
+    public Transform partToRotate;
+    private float turnSpeed = 5f;
+    public Transform firePoint;
+
 
     void Start()
     {
         InvokeRepeating("UpdateTarget",0f,0.5f);   
     }
 
+    /*
+     * Récupère l'ennemi le plus proche
+     */
     void UpdateTarget()
     {
         GameObject[] ennemies = GameObject.FindGameObjectsWithTag(ennemyTag);
@@ -42,7 +55,9 @@ public class Turret : MonoBehaviour
 
         if(nearestEnnemy != null && shortestDistance <= range)
         {
+            //Ennemi le plus proche
             target = nearestEnnemy.transform;
+            targetEnnemy = target.GetComponent<Ennemy>();
         }
         else
         {
@@ -50,7 +65,6 @@ public class Turret : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (target == null)
@@ -84,6 +98,12 @@ public class Turret : MonoBehaviour
 
     void Laser()
     {
+        //Dégats
+        targetEnnemy.TakeDamage(damageOverTime * Time.deltaTime);
+
+        //Ralentissement
+        targetEnnemy.Slow(slowAmount);
+
         //Activation du laser
         if(!lineRenderer.enabled)
         {
@@ -91,6 +111,8 @@ public class Turret : MonoBehaviour
             impactLight.enabled = true;
             impactEffect.Play();
         }
+
+        //Depart et arrivée du laser
         lineRenderer.SetPosition(0,firePoint.position);
         lineRenderer.SetPosition(1,target.position);
 
