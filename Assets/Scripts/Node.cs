@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 
 public class Node : MonoBehaviour
 {
+    [Header("Couleurs")]
     public Color hoverColor;
-    private Color baseColor;
     public Color notEnoughMoneyColor;
+    private Color baseColor;
+
     [HideInInspector]
     public GameObject turret;
     [HideInInspector]

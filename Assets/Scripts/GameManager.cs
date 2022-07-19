@@ -5,12 +5,16 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static bool gameEnded = false;
-    public GameObject GameOverUI;
+
+    [Header("References")]
+    public GameObject gameOverUI;
+    public GameObject completeLevelUI;
 
     private void Start()
     {
         gameEnded = false;
     }
+   
     void Update()
     {
         //Plus de vies
@@ -23,6 +27,14 @@ public class GameManager : MonoBehaviour
     void EndGame()
     {
         gameEnded = true;
-        GameOverUI.SetActive(true);
+
+        //Ecran de defaite
+        gameOverUI.SetActive(true);
+    }
+
+    public void WinLevel()
+    {
+        gameEnded = true;
+        completeLevelUI.SetActive(true);
     }
 }

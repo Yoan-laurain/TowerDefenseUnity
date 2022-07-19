@@ -18,6 +18,12 @@ public class CameraController : MonoBehaviour
             return;
         }
 
+        ZQSD();
+        MouseScrool();
+    }
+
+    private void ZQSD()
+    {
         if (Input.GetKey(KeyCode.Z) || Input.mousePosition.y >= Screen.height - panBorder)
         {
             transform.Translate(Vector3.forward * panSpeed * Time.deltaTime, Space.World);
@@ -37,12 +43,14 @@ public class CameraController : MonoBehaviour
         {
             transform.Translate(Vector3.right * panSpeed * Time.deltaTime, Space.World);
         }
+    }
 
+    private void MouseScrool()
+    {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         Vector3 pos = transform.position;
         pos.y -= scroll * 1000 * scrollSpeed * Time.deltaTime;
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
         transform.position = pos;
     }
-
 }

@@ -15,10 +15,8 @@ public class BuildManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null)
-        {
-            return;
-        }
+        if(instance != null) return;
+
         instance = this;
     }
 

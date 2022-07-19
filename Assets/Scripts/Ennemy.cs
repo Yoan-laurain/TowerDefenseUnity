@@ -5,15 +5,16 @@ using UnityEngine.UI;
 
 public class Ennemy : MonoBehaviour
 {
-    [HideInInspector]
-    public float speed = 10f;
-
-
+    [Header("Properties")]
     public float Initialspeed = 10f;
     public float starthealth = 100f;
     private float currentHealth;
     public int rewardKill = 50;
+    [HideInInspector]
+    public float speed = 10f;
+    private bool isDead = false;
 
+    [Header("References")]
     public GameObject dieEffect;
     public Image healthBar;
 
@@ -32,13 +33,15 @@ public class Ennemy : MonoBehaviour
         healthBar.fillAmount = currentHealth / starthealth;
 
         //Check si il est mort
-        if(currentHealth <= 0)
+        if(currentHealth <= 0 && !isDead)
         {
             Die();
         }
     }
     private void Die()
     {
+        isDead = true;
+
         //Ajout de l'argent pour le joueur
         PlayerStat.money += rewardKill;
         
@@ -48,6 +51,9 @@ public class Ennemy : MonoBehaviour
 
         //Destruction de l'ennemi
         Destroy(gameObject);
+
+        //Enlève l'ennemi du compteur d'ennemis vivant
+        WavesSpooner.ennemiesAlive--;
     }
 
     public void Slow(float amount)
